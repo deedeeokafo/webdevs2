@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <title>Crime Center</title>
+        <style>
+            #results, #form {
+                border: 5px dashed black;
+            }
+            p, h1 {
+                font-family: helvetica;
+            }
+            p {
+                font-size:1.5em;
+                line-height:1.5em; 
+                margin-left: 24px;
+            }
+            pre {
+                font-size: 2em;
+            }
+            div {
+                background-color: aqua; 
+                border: 1px solid black; 
+                border-radius: 6px;
+                border-style: solid;
+                min-height: 75px;
+                padding: 15px;
+            }
+            
+            p {
+                color: white;
+            }
+            a {
+                color: white;
+            }
+            .alink {
+                color: green;
+            }
+            .notWhite {
+                color: black;
+            }
+            #txtCrime {
+                width: 110px;
+            }
+        </style>
+    </head>
+    <body>
+    <h1><span style="background-color:yellow"><strong>Crime Finder</strong></span></h1>
+    
+    <!-- div for instructions and form -->
+    <div id="form">
+        <p class="notWhite">
+            Enter the ward number (1-50) and the type of crime into the searchboxes.<br><br>Note: You can visit the different types of crime in the JSON page.  Just scroll up to the option dropdown menu a little before the last sentence of this introduction.  You can use the arrows in the ward number textbox to go from Ward 1-50.  Additionally, you can use the arrows to go between the types of crimes in the option dropdown mentioned earlier and the ward numbers as well.
+            <br>
+            <br>
+            Make sure that when you are searching up the crimes, that you are putting them in all caps because of the condition that they were in at the City of Chicago Data Portal (COCDP).
+            <br>
+            <br>
+            Visit <a class="alink" href="https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2">the COCDP website to find the Crime Dataset along with information</a> on other types of crimes with different filters, e.g. Block numbers, case numbers.<br><br><em></p>
+        <input id="txtCrime" type="number" min="1" max="50" placeholder="Ward Number" required></input>
+        <br>
+        <select id="dropdown">
+          <option value="Search">SCROLL DOWN FOR TYPES OF CRIMES</option>
+          <option value="ARSON">Arson</option>
+          <option value="ASSAULT">Assault</option>
+          <option value="BATTERY">Battery</option>
+          <option value="BURGLARY">Burglary</option>
+          <option value="CONCEALED CARRY LICENSE VIOLATION">Concealed Carry License Violation</option>
+          <option value="CRIMINAL DAMAGE">Criminal Damage</option>
+          <option value="CRIMINAL TRESPASS">Criminal Trespass</option>
+          <option value="CRIM SEXUAL ASSAULT">Criminal Sexual Assault</option>
+          <option value="DECEPTIVE PRACTICE">Deceptive Practice</option>
+          <option value="DOMESTIC VIOLANCE">Domestic Violence</option>
+          <option value="GAMBLING">Gambling</option>
+          <option value="HOMICIDE">Homicide</option>
+          <option value="HUMAN TRAFFICKING">Human Trafficking</option>
+          <option value="INTERFERENCE WITH PUBLIC OFFICER">Interference with Public Officer</option>
+          <option value="INTIMIDATION">Intimidation</option>
+          <option value="KIDNAPPING">Kidnapping</option>
+          <option value="LIQUOR LAW VIOLATION">Liquor Law Violation</option>
+          <option value="MOTOR VEHICLE THEFT">Motor Vehicle Theft</option>
+          <option value="NARCOTICS">Narcotics</option>
+          <option value="NON - CRIMINAL">Non - Criminal</option>
+          <option value="NON-CRIMINAL">Non-Criminal</option>
+          <option value="NON-CRIMINAL (SUBJECT SPECIFIED)">Non-Criminal (Subject Specified)</option>
+          <option value="OBSCENITY">Obscenity</option>
+          <option value="OFFENSE INVOLVING CHILDREN">Offense Involving Children</option>
+          <option value="OTHER NARCOTIC VIOLATION">Other Narcotic Violation</option>
+          <option value="OTHER OFFENSE">Other Offense</option>
+          <option value="PROSTITUTION">Prostitution</option>
+          <option value="PUBLIC INDECENCY">Public Indecency</option>
+          <option value="PUBLIC PEACE VIOLATION">Public Peace Violation</option>
+          <option value="RITUALISM">Ritualism</option>
+          <option value="ROBBERY">Robbery</option>
+          <option value="SEX OFFENSE">Sex Offense</option>
+          <option value="STALKING">Stalking</option>
+          <option value="THEFT">Theft</option>
+          <option value="WEAPONS VIOLATION">Weapons Violation</option>
+        </select>
+        <br>
+        <br>
+        <button type="button" id="btnSearch">Search</button>
+        <br>
+        <br>
+        <button onClick="reset()">Reset</button>
+    </div>
+    
+    <!-- a div to store the results -->
+    <div id="results">
+        
+        
+        
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+    function reset() {
+        document.getElementById("txtCrime").value = "";
+        document.getElementById("dropdown").value = "Search";
+    }
+   
+       
+        $(function () {    // don't execute code until DOM is ready
+            /*
+                most code should wait for the button click event,
+                but creating and setting some variables *can* be 
+                done when the page loads
+            */
+
+            // api endpoint for the crime data
+            var baseURL = 'https://data.cityofchicago.org/resource/c4ep-ee5m.json?ward=001&primary_type=ROBBERY';
+            
+            // optional filters we're appending: ward, type
+            var filter = '?ward=' + $("#txtCrime").val();
+            var filter2 = '?primary_type=' + $("#dropdown").val();
+            
+            // the url; we'll append the block number in button click
+            var url = baseURL + filter + filter2;   
+            
+            console.log(url);
+            
+            // start with button disabled
+            $("#btnSearch").attr("disabled", true);
+            
+            // enable button only if text in input box
+            $("#txtCrime").keyup(function(){   // change event doesn't work, so using keyup 
+                if ($("#txtCrime").val() == "value.ward" && $("#dropdown").val() == value.primary_type) {    // if value is empty
+                    $("#btnSearch").attr("disabled", true)  // set disabled
+                }
+                else {
+                    $("#btnSearch").attr("disabled", false)
+                }
+            });
+         
+         
+           
+            // we want to get the data and display on button click
+            $("#btnSearch").on("click", function() {
+                
+                // each time we search, we need to clear the results
+                $("#results").html("");
+                
+                // get the input plate number
+                //   and append to url in getJSON call
+
+                var urlWithParams = url; 
+                console.log(urlWithParams);  // verify that it's being created correctly
+           
+                // jQuery command to retrieve json data
+                
+                $.getJSON(urlWithParams)      // append the plateNum
+                    .done (function (data) {    // execute this function when getJSON is done
+                        
+                        console.log(data);
+                        
+                        var numRecords = data.length;  // the length of the array
+                        
+                        // notify of number of records
+                        var message = 
+                            "<p class='notWhite'>Records found: "
+                            + numRecords
+                            + "</p>";
+                        
+                        $("#results").append(message);
+                        
+                        
+                        // only loop records if count > 0
+                        if (numRecords > 0) {
+                            // loop through the records
+                            $.each (data , 
+                                function (index, value) {
+                                    // append content to the body 
+                                    if (value.arrest == true) { 
+                                        var myStyle = 'background-color: blue;'
+                                        arrestvalue= "Yes";
+                                    } else { 
+                                        var myStyle = 'background-color: red;'
+                                        arrestvalue = "No";
+                                    } 
+                                         
+                                    var html = "<div class='resultBox' style='" + myStyle + "'>" 
+                                        + "<p>"
+                                        +"Address: "
+                                        + value.block
+                                        +"<br>"
+                                        + "Case Number: "
+                                        + value.case_number.toUpperCase().replace(/(^|\s)[a-z]/g,function(f){return f.toUpperCase();})
+                                        + "<br>"
+                                        + "Date: "
+                                        + String(value.date.slice(5, 10) + "-" + String(V.date.slice(0, 4)))
+                                        + "<br>Description of Crime: "
+                                        + value.description.toLowerCase().replace(/(^|\s)[a-z]/g,function(f){return f.toUpperCase();})
+                                        + "<br>Location: "
+                                        + "<a href='https://www.google.com/maps/place/" 
+                                        + value.location.latitude + ",%20" + value.location.longitude + " Chicago, IL'>"
+                                        + "Google Maps</a>"
+                                        + "<br>Arrest: "
+                                        + "</p>";
+                                        +"</div>";
+                                   
+                                   
+                                    $("#results").append(html);
+     
+                            
+                                
+                                }  // end of function
+                            
+                            ); // end of each loop                            
+                        
+                        }   // end of if statement
+
+                    });  // end of getJSON
+         
+            });  // end of button click event
+        
+        }); // end of jQuery wrapper
+        
+        
+    </script>
+    </body>
+</html>
