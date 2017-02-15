@@ -130,12 +130,18 @@
                 done when the page loads
             */
 
+
+         
+           
+            // we want to get the data and display on button click
+            $("#btnSearch").on("click", function() {
+                
             // api endpoint for the crime data
-            var baseURL = 'https://data.cityofchicago.org/resource/c4ep-ee5m.json?ward=001&primary_type=ROBBERY';
+            var baseURL = 'https://data.cityofchicago.org/resource/c4ep-ee5m.json';
             
             // optional filters we're appending: ward, type
             var filter = '?ward=' + $("#txtCrime").val();
-            var filter2 = '?primary_type=' + $("#dropdown").val();
+            var filter2 = '&primary_type=' + $("#dropdown").val();
             
             // the url; we'll append the block number in button click
             var url = baseURL + filter + filter2;   
@@ -155,10 +161,6 @@
                 }
             });
          
-         
-           
-            // we want to get the data and display on button click
-            $("#btnSearch").on("click", function() {
                 
                 // each time we search, we need to clear the results
                 $("#results").html("");
@@ -210,7 +212,7 @@
                                         + value.case_number.toUpperCase().replace(/(^|\s)[a-z]/g,function(f){return f.toUpperCase();})
                                         + "<br>"
                                         + "Date: "
-                                        + String(value.date.slice(5, 10) + "-" + String(V.date.slice(0, 4)))
+                                        + String(value.date.slice(5, 10) + "-" + String(value.date.slice(0, 4)))
                                         + "<br>Description of Crime: "
                                         + value.description.toLowerCase().replace(/(^|\s)[a-z]/g,function(f){return f.toUpperCase();})
                                         + "<br>Location: "
@@ -218,6 +220,7 @@
                                         + value.location.latitude + ",%20" + value.location.longitude + " Chicago, IL'>"
                                         + "Google Maps</a>"
                                         + "<br>Arrest: "
+                                        + arrestvalue
                                         + "</p>";
                                         +"</div>";
                                    
