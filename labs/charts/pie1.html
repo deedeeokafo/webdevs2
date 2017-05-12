@@ -21,21 +21,19 @@
         data.addColumn('string', 'Topping');
         data.addColumn('number', 'Slices');
         data.addRows([
-          ['Christians', 5],
-          ['Muslims', 3],
-          ['Hindus', 2],
-          ['Jews', 1],
-          ['Sikhs', 0.9],
-          ['Buddhists', 0.852],
-          ['Catholics', 0.827],
-          ['Traditional Chinese', 0.8],
-          ['Atheist/Agnostic', 0.5]
+          ['Christians', 100],
+          ['Muslims', 84],
+          ['Hindus', 69],
+          ['Jews', 51],
+          ['Sikhs', 48],
+          ['Buddhists', 30],
+          ['Catholics', 24],
+          ['Traditional Chinese', 13],
+          ['Atheist/Agnostic', 6]
         ]);
 
         // Set chart options
-        var options = {'title':'The religious makeup of the classroom at Berkeley Middle School',
-                       'width':400,
-                       'height':300};
+        var options = {'title':'The religious makeup of the English class of Mr. Jones at Berkeley Middle School'};
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
@@ -46,6 +44,6 @@
 
   <body>
     <!--Div that will hold the pie chart-->
-    <div id="chart_div"></div>
+    <div id="chart_div" style="width: 900px; height: 500px;"></div>
   </body>
 </html>
